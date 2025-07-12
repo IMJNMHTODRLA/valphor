@@ -1,5 +1,6 @@
 *.sh
 __pycache__
 .vscode
-setup.py
 MANIFEST.in
+dist
+valphor.egg-info
