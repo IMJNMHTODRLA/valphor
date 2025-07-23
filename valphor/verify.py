@@ -16,21 +16,20 @@ def verify(hashed: bytes, verify_str: bytes) -> bool:
 
     only_salt: bytes = base64.b64decode((sub_parts[5] + '=' * (-len(sub_parts[5]) % 4)).encode()) #dsfheuhsoteshothso
 
-    mem_size: int = int(4 ** cost * 2)
-    if mem_size < 1024:
-        mem_size = 1024
+    mem_size: int = int(1.2 ** cost)
+    if mem_size < 32:
+        mem_size = 32
     memory: bytearray = bytearray(mem_size)
 
     hasingsalt: bytes = only_salt + verify_str + only_salt
     for i in range(int(2 ** cost)):
-        for ii in range(int(2 ** cost // 128)):
-            FUckint = hashlib.sha3_384(b"mem_chunk" + hashlib.sha3_512(b"mem_chunk" + b"mem_chunk").digest() + b"mem_chunk").digest()
         memory[secrets.randbelow(len(memory))] = i % 256
 
         start = secrets.randbelow(len(memory) - 16)
         mem_chunk = bytes(memory[start:start + 16])
 
-        FUckint = hashlib.sha3_384(mem_chunk + hashlib.sha3_512(mem_chunk + mem_chunk).digest() + mem_chunk).digest()
+        for ii in range(int(1.32 ** cost)):
+            FUckint = hashlib.sha3_384(mem_chunk + hashlib.sha3_512(mem_chunk + mem_chunk).digest() + mem_chunk).digest()
 
         part: bytes = hashlib.sha3_224(verify_str + only_salt).digest()
         part1: bytes = hashlib.sha3_512(hasingsalt).digest() + hashlib.sha3_256(hasingsalt + only_salt + hashlib.sha3_256(hasingsalt).digest() + hasingsalt + verify_str + only_salt + verify_str + only_salt).digest()

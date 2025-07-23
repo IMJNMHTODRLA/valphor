@@ -1,6 +1,6 @@
 import base64
 import hashlib
-import secrets
+#import secrets
 
 def hash(verify_str: bytes, salt: bytes, length: int = 512) -> bytes:
     sub_parts = salt.decode().split('$') #$v1$l16$c12$dsfheuhsoteshothso
@@ -22,19 +22,19 @@ def hash(verify_str: bytes, salt: bytes, length: int = 512) -> bytes:
 
     only_salt: bytes = base64.b64decode((sub_parts[4] + '=' * (-len(sub_parts[4]) % 4)).encode()) #dsfheuhsoteshothso
 
-    mem_size: int = int(2 ** cost)
-    if mem_size < 512:
-        mem_size = 512
-    memory: bytearray = bytearray(mem_size)
+    #mem_size: int = int(1.1 ** cost)
+    #if mem_size < 32:
+    #    mem_size = 32
+    #memory: bytearray = bytearray(mem_size)
 
     hasingsalt: bytes = only_salt + verify_str + only_salt
     for i in range(int(2 ** cost)):
-        memory[secrets.randbelow(len(memory))] = i % 256
+        #memory[secrets.randbelow(len(memory))] = i % 256
 
-        start = secrets.randbelow(len(memory) - 16)
-        mem_chunk = bytes(memory[start:start + 16])
+        #start = secrets.randbelow(len(memory) - 16)
+        #mem_chunk = bytes(memory[start:start + 16])
 
-        FUckint = hashlib.sha3_384(mem_chunk + hashlib.sha3_512(mem_chunk + mem_chunk).digest() + mem_chunk).digest()
+        #FUckint = hashlib.sha3_384(mem_chunk + hashlib.sha3_512(mem_chunk + mem_chunk).digest() + mem_chunk).digest()
 
         part: bytes = hashlib.sha3_224(verify_str + only_salt).digest()
         part1: bytes = hashlib.sha3_512(hasingsalt).digest() + hashlib.sha3_256(hasingsalt + only_salt + hashlib.sha3_256(hasingsalt).digest() + hasingsalt + verify_str + only_salt + verify_str + only_salt).digest()
@@ -53,7 +53,7 @@ def hash(verify_str: bytes, salt: bytes, length: int = 512) -> bytes:
         hasingsalt = hashlib.sha3_512(verify_str + hashlib.sha3_384(sub_part2 + hashlib.sha384(sub_part2 + part).digest() + hashlib.sha384(part1 + sub_part2 + sub_part2).digest()).digest() + hashlib.sha384(hashlib.sha384(sub_part + part).digest() + part2 + sub_part).digest() + sub_part2).digest()
         hasingsalt = hashlib.shake_256(hasingsalt + hashlib.sha3_512(hasingsalt).digest() + hashlib.sha3_384(sub_part2 + hashlib.sha384(sub_part2 + part).digest() + hashlib.sha384(part1 + sub_part2 + sub_part2).digest()).digest() + hasingsalt + hashlib.sha384(hashlib.sha384(sub_part + part).digest() + part2 + sub_part).digest() + sub_part2).digest(length // 8)
 
-        memory[i % len(memory)] = (memory[i % len(memory)] + memory[(i - 1) % len(memory)] + i) % 256
+        #memory[i % len(memory)] = (memory[i % len(memory)] + memory[(i - 1) % len(memory)] + i) % 256
 
     hasingsalt = base64.b64encode(hasingsalt).rstrip(b'=')
 
